@@ -31,7 +31,7 @@ public class PostController {
         return new ResponseEntity<>(savedPostDto, HttpStatus.CREATED);
     }
 
-   /* //GET /v1/api/posts/{id}
+    //GET /v1/api/posts/{id}
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable long id) {
         PostDto postDto =  postService.getPostById(id);
@@ -54,5 +54,4 @@ public class PostController {
         postService.deletePostById(id);
         return new ResponseEntity<>("Deleted Successfully Post Resource::"+ id, HttpStatus.OK);
     }
-*/
 }

@@ -8,12 +8,12 @@ public interface PostService {
 
     List<PostDto> getAllPosts();
 
-    /*PostDto getPostById(long id);*/
+    PostDto getPostById(long id);
 
     PostDto createPost(PostDto postDto);
 
- /*   PostDto updatePost(PostDto postDto, long postId);
+    PostDto updatePost(PostDto postDto, long postId);
 
-    void deletePostById(long id);*/
+    void deletePostById(long id);
 
 }

@@ -1,6 +1,7 @@
 package com.ganeshgc.socialmediablog_app.service.impl;
 
 import com.ganeshgc.socialmediablog_app.dto.PostDto;
+import com.ganeshgc.socialmediablog_app.exception.ResourceNotFoundException;
 import com.ganeshgc.socialmediablog_app.model.PostEntity;
 import com.ganeshgc.socialmediablog_app.repository.PostRepository;
 import com.ganeshgc.socialmediablog_app.service.PostService;
@@ -29,11 +30,11 @@ public class PostServiceImpl implements PostService {
     }
 
 
-   /* @Override
+    @Override
     public PostDto getPostById(long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","id", String.valueOf(postId)));
         return mapEntityToDto(postEntity);
-    }*/
+    }
 
     @Override
     public PostDto createPost(PostDto inPostDto) {
@@ -45,7 +46,6 @@ public class PostServiceImpl implements PostService {
     }
 
 
-/*
     @Override
     public PostDto updatePost(PostDto postDto, long postId) {
 
@@ -62,15 +62,13 @@ public class PostServiceImpl implements PostService {
 
         //convert entity to dto and return the dto
         return mapEntityToDto(updatedPostEntity);
-    }*/
+    }
 
-/*
     @Override
     public void deletePostById(long postId) {
         PostEntity postEntityToBeDeleted =  postRepository.findById(postId).orElseThrow(() ->  new ResourceNotFoundException("Post","id", String.valueOf(postId)));
         postRepository.delete(postEntityToBeDeleted);
     }
-*/
 
 
 
