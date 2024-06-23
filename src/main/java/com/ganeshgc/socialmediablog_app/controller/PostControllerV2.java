@@ -20,8 +20,10 @@ public class PostControllerV2 {
     @GetMapping
     public PostResponse getAllPosts(
             @RequestParam(value = "pageNo",defaultValue = "0",required = false) int pageNo,
-            @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize) {
-        return postService.getAllPosts(pageNo,pageSize);
+            @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize,
+            @RequestParam(value = "sortBy",defaultValue = "id",required = false)String sortBy,
+            @RequestParam(value = "sortOrder",defaultValue = "asc",required = false)String sortOrder) {
+        return postService.getAllPosts(pageNo,pageSize,sortBy,sortOrder);
     }
 
 }

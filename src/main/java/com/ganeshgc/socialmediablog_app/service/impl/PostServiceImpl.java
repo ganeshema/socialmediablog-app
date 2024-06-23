@@ -10,11 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.sort;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -52,6 +55,35 @@ public class PostServiceImpl implements PostService {
                    .isLastPage(postEntities.isLast())
                    .build();
            return postResponse;
+        }
+        return null;
+    }
+    @Override
+    public PostResponse getAllPosts(int pageNo, int pageSize,String sortBy, String sortOrder) {
+        Pageable pageable= null;
+
+        if(sortBy!=null & sortOrder!=null) {
+            Sort sort=sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+            pageable= PageRequest.of(pageNo,pageSize,sort);
+
+
+        }else {
+            pageable = PageRequest.of(pageNo, pageSize);
+        }
+        Page<PostEntity> postEntities = postRepository.findAll(pageable);
+
+        //Map/ convert PostEntity to PostDto
+        if(postEntities != null) {
+            List<PostDto> postDtoList=postEntities.stream().map(postEntity -> mapEntityToDto(postEntity)).collect(Collectors.toList());
+            PostResponse postResponse=PostResponse.builder()
+                    .content(postDtoList)
+                    .pageNo(postEntities.getNumber())
+                    .pageSize(postEntities.getSize())
+                    .totalPages(postEntities.getTotalPages())
+                    .totalCount(postEntities.getTotalElements())
+                    .isLastPage(postEntities.isLast())
+                    .build();
+            return postResponse;
         }
         return null;
     }
