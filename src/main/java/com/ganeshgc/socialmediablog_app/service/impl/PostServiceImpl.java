@@ -3,10 +3,15 @@ package com.ganeshgc.socialmediablog_app.service.impl;
 import com.ganeshgc.socialmediablog_app.dto.PostDto;
 import com.ganeshgc.socialmediablog_app.exception.ResourceNotFoundException;
 import com.ganeshgc.socialmediablog_app.model.PostEntity;
+import com.ganeshgc.socialmediablog_app.payload.PostResponse;
 import com.ganeshgc.socialmediablog_app.repository.PostRepository;
 import com.ganeshgc.socialmediablog_app.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +30,28 @@ public class PostServiceImpl implements PostService {
         //Map/ convert PostEntity to PostDto
         if(postEntities != null) {
             return postEntities.stream().map(postEntity -> mapEntityToDto(postEntity)).collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    @Override
+    public PostResponse getAllPosts(int pageNo, int pageSize) {
+        Pageable pageable= PageRequest.of(pageNo,pageSize);
+
+        Page<PostEntity> postEntities = postRepository.findAll(pageable);
+
+        //Map/ convert PostEntity to PostDto
+        if(postEntities != null) {
+            List<PostDto> postDtoList=postEntities.stream().map(postEntity -> mapEntityToDto(postEntity)).collect(Collectors.toList());
+           PostResponse postResponse=PostResponse.builder()
+                   .content(postDtoList)
+                   .pageNo(postEntities.getNumber())
+                   .pageSize(postEntities.getSize())
+                   .totalPages(postEntities.getTotalPages())
+                   .totalCount(postEntities.getTotalElements())
+                   .isLastPage(postEntities.isLast())
+                   .build();
+           return postResponse;
         }
         return null;
     }
