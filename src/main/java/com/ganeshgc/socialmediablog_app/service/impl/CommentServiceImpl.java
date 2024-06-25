@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -40,11 +41,54 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> getAllComments(long postId) {
-        return List.of();
+        List<CommentEntity> comments=commentRepository.findByPostId(postId);
+        List<CommentDto> commentDtos=new ArrayList<>();
+        for(CommentEntity commentEntity:comments){
+            CommentDto commentDto=new CommentDto();
+            BeanUtils.copyProperties(commentEntity,commentDto);
+            commentDtos.add(commentDto);
+        }
+        return commentDtos;
     }
 
     @Override
     public CommentDto getCommentsByPostIdAndPostId(long postId, long commentId) {
+        CommentEntity commentEntity=commentRepository.findById(commentId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(commentId)));
+        PostEntity postEntity=postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(postId)));
+        if(commentEntity.getPostEntity().getId()==postEntity.getId()){
+            CommentDto commentDto=new CommentDto();
+            BeanUtils.copyProperties(commentEntity,commentDto);
+            return commentDto;
+        }
         return null;
     }
+
+    @Override
+    public CommentDto updateCommentByPostIdAndCommentId(long postId, long commentId, CommentDto commentDto) {
+        CommentEntity commentEntity=commentRepository.findById(commentId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(commentId)));
+        PostEntity postEntity=postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(postId)));
+        if(commentEntity.getPostEntity().getId()==postEntity.getId()){
+            BeanUtils.copyProperties(commentDto,commentEntity);
+            commentRepository.save(commentEntity);
+            return commentDto;
+        }
+        return null;
+    }
+    @Override
+    public void deleteCommentByPostIdAndCommentId(long postId, long commentId) {
+        CommentEntity commentEntity=commentRepository.findById(commentId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(commentId)));
+        PostEntity postEntity=postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(postId)));
+        if(commentEntity.getPostEntity().getId()==postEntity.getId()){
+            commentRepository.delete(commentEntity);
+        }
+    }
+
+    @Override
+    public void deleteCommentsByPostId(long postId) {
+        PostEntity postEntity=postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(postId)));
+        List<CommentEntity> commentEntities=commentRepository.findByPostId(postId);
+        commentRepository.deleteAll(commentEntities);
+    }
+
+
 }
