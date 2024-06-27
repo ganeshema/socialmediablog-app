@@ -2,6 +2,7 @@ package com.ganeshgc.socialmediablog_app.controller;
 
 import com.ganeshgc.socialmediablog_app.dto.CommentDto;
 import com.ganeshgc.socialmediablog_app.service.CommentService;
+import com.github.fge.jsonpatch.JsonPatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,11 @@ public class CommentController {
     public ResponseEntity deleteCommentsByPostId(@PathVariable long postId) {
         commentService.deleteCommentsByPostId(postId);
         return new ResponseEntity(HttpStatus.OK);
+    }
+    @PatchMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommentDto> updateCommentUisingJsonPatch(@PathVariable long postId, @PathVariable long commentId, @RequestBody JsonPatch jsonPatch) {
+        CommentDto commentDto=commentService.updateCommentByPostIdAndCommentIdUisingJsonPatch(postId, commentId, jsonPatch);
+        return new ResponseEntity(commentDto,HttpStatus.OK);
     }
 
 }

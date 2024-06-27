@@ -7,6 +7,7 @@ import com.ganeshgc.socialmediablog_app.model.PostEntity;
 import com.ganeshgc.socialmediablog_app.repository.CommentRepository;
 import com.ganeshgc.socialmediablog_app.repository.PostRepository;
 import com.ganeshgc.socialmediablog_app.service.CommentService;
+import com.github.fge.jsonpatch.JsonPatch;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,6 +89,22 @@ public class CommentServiceImpl implements CommentService {
         PostEntity postEntity=postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(postId)));
         List<CommentEntity> commentEntities=commentRepository.findByPostId(postId);
         commentRepository.deleteAll(commentEntities);
+    }
+
+    @Override
+    public CommentDto updateCommentByPostIdAndCommentIdUisingJsonPatch(long postId, long commentId, JsonPatch jsonPatch) {
+        PostEntity postEntity=postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(postId)));
+        CommentEntity commentEntity=commentRepository.findById(commentId).orElseThrow(()->new ResourceNotFoundException("Post","id",String.valueOf(commentId)));
+        if(!commentEntity.getPostEntity().getId().equals(postEntity.getId())){
+            throw new RuntimeException("Bad Request: Comment Not found");
+        }else{
+            BeanUtils.copyProperties(jsonPatch,commentEntity);
+            commentRepository.save(commentEntity);
+            CommentDto commentDto=new CommentDto();
+            BeanUtils.copyProperties(commentEntity,commentDto);
+            return commentDto;
+        }
+
     }
 
 
