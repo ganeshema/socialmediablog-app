@@ -3,6 +3,7 @@ package com.ganeshgc.socialmediablog_app.controller;
 import com.ganeshgc.socialmediablog_app.dto.CommentDto;
 import com.ganeshgc.socialmediablog_app.service.CommentService;
 import com.github.fge.jsonpatch.JsonPatch;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class CommentController {
 
     //POST / v1/api/{postId}/comments
     @PostMapping("/posts/{postId}/comments")
-    public CommentDto createComment(@PathVariable long postId, @RequestBody CommentDto commentDto) {
+    public CommentDto createComment(@PathVariable long postId, @RequestBody @Valid CommentDto commentDto) {
         return commentService.createComment(postId, commentDto);
 
     }
@@ -34,7 +35,7 @@ public class CommentController {
         return new ResponseEntity(commentDto, HttpStatus.FOUND);
     }
     @PutMapping("/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> updateComment(@PathVariable long postId, @PathVariable long commentId, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> updateComment(@PathVariable long postId, @PathVariable long commentId, @RequestBody @Valid CommentDto commentDto) {
         CommentDto commentDto1=commentService.updateCommentByPostIdAndCommentId(postId,commentId,commentDto);
         return new ResponseEntity(commentDto1, HttpStatus.OK);
     }
@@ -49,7 +50,7 @@ public class CommentController {
         return new ResponseEntity(HttpStatus.OK);
     }
     @PatchMapping("/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> updateCommentUisingJsonPatch(@PathVariable long postId, @PathVariable long commentId, @RequestBody JsonPatch jsonPatch) {
+    public ResponseEntity<CommentDto> updateCommentUisingJsonPatch(@PathVariable long postId, @PathVariable long commentId,@Valid @RequestBody JsonPatch jsonPatch) {
         CommentDto commentDto=commentService.updateCommentByPostIdAndCommentIdUisingJsonPatch(postId, commentId, jsonPatch);
         return new ResponseEntity(commentDto,HttpStatus.OK);
     }
