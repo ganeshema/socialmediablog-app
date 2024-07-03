@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class CommentController {
 
     //POST / v1/api/{postId}/comments
     @PostMapping("/posts/{postId}/comments")
+    @PreAuthorize("hasRole('AADMIN')")
     public CommentDto createComment(@PathVariable long postId, @RequestBody @Valid CommentDto commentDto) {
         return commentService.createComment(postId, commentDto);
 
@@ -35,21 +37,25 @@ public class CommentController {
         return new ResponseEntity(commentDto, HttpStatus.FOUND);
     }
     @PutMapping("/posts/{postId}/comments/{commentId}")
+    @PreAuthorize("hasRole('AADMIN')")
     public ResponseEntity<CommentDto> updateComment(@PathVariable long postId, @PathVariable long commentId, @RequestBody @Valid CommentDto commentDto) {
         CommentDto commentDto1=commentService.updateCommentByPostIdAndCommentId(postId,commentId,commentDto);
         return new ResponseEntity(commentDto1, HttpStatus.OK);
     }
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    @PreAuthorize("hasRole('AADMIN')")
     public ResponseEntity deleteComment(@PathVariable long postId, @PathVariable long commentId) {
         commentService.deleteCommentByPostIdAndCommentId(postId, commentId);
         return new ResponseEntity(HttpStatus.OK);
     }
     @DeleteMapping("/posts/{postId}/comments")
+    @PreAuthorize("hasRole('AADMIN')")
     public ResponseEntity deleteCommentsByPostId(@PathVariable long postId) {
         commentService.deleteCommentsByPostId(postId);
         return new ResponseEntity(HttpStatus.OK);
     }
     @PatchMapping("/posts/{postId}/comments/{commentId}")
+    @PreAuthorize("hasRole('AADMIN')")
     public ResponseEntity<CommentDto> updateCommentUisingJsonPatch(@PathVariable long postId, @PathVariable long commentId,@Valid @RequestBody JsonPatch jsonPatch) {
         CommentDto commentDto=commentService.updateCommentByPostIdAndCommentIdUisingJsonPatch(postId, commentId, jsonPatch);
         return new ResponseEntity(commentDto,HttpStatus.OK);

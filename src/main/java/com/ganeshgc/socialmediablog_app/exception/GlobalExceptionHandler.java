@@ -20,13 +20,17 @@ import java.util.Map;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException, WebRequest webRequest) {
-        ErrorDetails errorDetails=new ErrorDetails(LocalDateTime.now(),resourceNotFoundException.getMessage(),webRequest.getDescription(false));
+    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(
+            ResourceNotFoundException resourceNotFoundException, WebRequest webRequest) {
+        ErrorDetails errorDetails=new ErrorDetails(LocalDateTime.now(),resourceNotFoundException.getMessage(),
+                webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetails> handleGenericException(ResourceNotFoundException resourceNotFoundException, WebRequest webRequest) {
-        ErrorDetails errorDetails=new ErrorDetails(LocalDateTime.now(),resourceNotFoundException.getMessage(),webRequest.getDescription(false));
+    public ResponseEntity<ErrorDetails> handleGenericException(
+            ResourceNotFoundException resourceNotFoundException, WebRequest webRequest) {
+        ErrorDetails errorDetails=new ErrorDetails(LocalDateTime.now(),
+                resourceNotFoundException.getMessage(),webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @Override
